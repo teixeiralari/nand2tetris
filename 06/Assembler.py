@@ -88,9 +88,9 @@ table = {
     }
 
 
-path_='/home/lariteixeira/Dropbox/nand2tetris/projects/06/'
-path_file = path_ + 'max/MaxL.asm'
-file_hack = path_ + 'max/MaxL.hack'
+path_=''
+path_file = path_ + ''
+file_hack = path_ + ''
 
 def Parser(path_):
     mylist = list()
