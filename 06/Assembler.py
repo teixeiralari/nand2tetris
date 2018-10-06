@@ -88,9 +88,9 @@ table = {
     }
 
 
-path_=''
-path_file = path_ + ''
-file_hack = path_ + ''
+path_='/home/lariteixeira/nand2tetris/06/rect/RectL'
+path_file = path_ + '.asm'
+file_hack = path_ + '.hack'
 
 def Parser(path_):
     mylist = list()
@@ -152,14 +152,15 @@ def aInstruction(i,RAM):
 
 def cInstruction(i, RAM):
     hack = '111'
-    if i.find('=') != -1:
-        if i.find(';')==-1:
+    if i.find('=') != -1: #encontrou =
+        if i.find(';')==-1: #nao encontrou ;
             dest1 = i.split('=')[0]
             comp1 = i.split('=')[1]
             jump1 = 'null'
         else:
             aux = i.split('=')
             dest1 = aux[0]
+            comp1 = aux[1].split(';')[0]
             jump1 = aux[1].split(';')[1]
     else:
         if (i.find(';') != -1):
