@@ -1,0 +1,149 @@
+class Square {
+
+   field int x, y;
+   field int size;
+   field int LeftBound;
+   field int RightBound;
+   field int UpBound; 
+   field int DownBound; 
+   field int direction;
+
+   constructor Square new(int Ax, int Ay, int Asize, int L, int R, int U, int D) {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      let LeftBound = L; //+ size; //6
+      let RightBound = R; //- size; //506;
+      let UpBound = U; //+ size; // 5;
+      let DownBound = D; //- size; //237;
+      let direction = 0;
+      do draw();
+      return this;
+   }
+
+   /** Disposes this square. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   method int getX()
+    {
+        return x;
+    }
+
+    method int getY()
+    {
+        return y;
+    }
+
+    method void setX(int nX)
+    {
+        let x = nX;
+        return;
+    }
+
+    method void setY(int nY)
+    {
+        let y = nY;
+        return;
+    }
+
+    method int getSize()
+    {
+        return size;
+    }
+
+    method void setSize(int sz)
+    {
+        let size = sz;
+        return;
+    }
+
+   method void draw() {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x - size, y - size, x + size, y + size);
+      return;
+   }
+
+   method boolean hitWall(){
+       var boolean hit;
+        if ((x + size) > 506 | (x) < 6)
+        {
+            let hit = true;
+        }
+        if((y + size) > 237 | (y) < 5)
+        {
+            let hit = true;
+        }
+
+        return hit;
+   }
+
+   method void erase() {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x - size, y - size, x + size, y + size);
+      return;
+   }
+
+  
+   method void eat() {
+      if (((y + size) < 240) & ((x + size) < 508)) {
+         do erase();
+         let size = size + 2;
+         do draw();
+      }
+      return;
+   }
+
+   method boolean permite(int dx, int dy)
+   {
+       var boolean chk;
+       let chk = (((x - size + dx) > LeftBound) & ((x + size + dx) < RightBound) & ((y - size + dy) > UpBound) & ((y + size + dy) < DownBound));
+       //if(chk){do Output.printString("True ");} else {do Output.printString("false ");}
+       return chk;
+   }
+
+   method void reposiciona(int dx, int dy){
+       do Screen.setColor(false);
+       do Screen.drawRectangle(x - size, y-size, x + size, y + size);
+       let x = x + dx;
+       let y = y + dy;
+       do Screen.setColor(true);
+       do Screen.drawRectangle(x - size, y-size, x + size, y + size);
+       return;
+   }
+  
+   method boolean moveUp() {
+       var boolean ok;
+       let ok = permite(0, -1);
+       if (ok) {do reposiciona(0, -1);}
+       return ok; //retorna true se estiver no limite permitido
+   }
+
+  
+   method boolean moveDown() {
+      var boolean ok;
+      let ok = permite(0, 1);
+      if (ok)
+        {do reposiciona(0, 1);}
+      return ok;
+   }
+
+  
+   method boolean moveLeft() {
+      var boolean ok;
+      let ok = permite(-1,0);
+      if (ok)
+        {do reposiciona(-1,0);}
+      return ok;
+   }
+
+   method boolean moveRight() {
+      var boolean ok;
+      let ok = permite(1,0);
+      if (ok)
+        {do reposiciona(1, 0);}
+      return ok;
+   }
+}

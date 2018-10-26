@@ -1,0 +1,50 @@
+class Random{
+    static int atual;
+    field int a, c, m;
+    //maior seed 936
+
+    constructor Random new()
+    {
+        let a = 35;
+        let c = 0;
+        let m = 509;
+        return this;
+    }
+
+    method void randseed(int seed) {
+        if(seed < 0) { let seed = 0; }
+        if(seed > 936) { let seed = 936; }
+        let atual = seed;
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int rand(){
+        let atual = mod(a * atual + c, m);
+        return atual;
+    }
+
+    method int randin(int min, int max)
+    {
+        // min incluso, max excluso
+        return min + mod(rand(), max - min);
+    }
+
+    method int mod(int numerador, int denominador)
+    {
+        var int razao;
+        let razao = (numerador/denominador);
+        return numerador -  (razao * denominador);
+    }
+
+    method void printlnInt(int number)
+    {
+        do Output.printInt(number);
+        do Output.printString("  ");
+        return;
+    }
+}
