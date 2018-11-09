@@ -1,0 +1,139 @@
+function Food.new 0
+push constant 8
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push constant 2
+pop this 2
+push argument 2
+pop this 4
+push argument 3
+pop this 5
+push argument 4
+pop this 6
+push argument 5
+pop this 7
+call Random.new 0
+pop this 3
+push pointer 0
+call Food.draw 1
+pop temp 0
+push pointer 0
+return
+function Food.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Food.erase 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Food.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 2
+sub
+push this 1
+push this 2
+sub
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Food.erase 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 2
+sub
+push this 1
+push this 2
+sub
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Food.getX 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Food.getY 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Food.setX 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 0
+push constant 0
+return
+function Food.setY 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 1
+push constant 0
+return
+function Food.getSize 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Food.renew 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Food.erase 1
+pop temp 0
+push this 3
+push this 4
+push this 2
+add
+push this 5
+push this 2
+sub
+call Random.randin 3
+pop this 0
+push this 3
+push this 6
+push this 2
+add
+push this 7
+push this 2
+sub
+call Random.randin 3
+pop this 1
+push pointer 0
+call Food.draw 1
+pop temp 0
+push constant 0
+return

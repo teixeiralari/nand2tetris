@@ -1,0 +1,130 @@
+/**
+ * Este jogo permite mover o quadrado para direita, esquerda, cima e baixo;
+ * Quando o quadrado comer a comida, ele cresce.
+ * Se encostar nas paredes é gameover.
+ */
+
+class SquareGame {
+   field Square square; 
+   field Random random;
+   field int score; 
+   field Food food;
+   field int boundUp, boundDown, boundLeft, boundRight, cursorLine, cursorColumn, sqSize, gmTime;
+ 
+   constructor SquareGame new() {
+      let random = Random.new();
+      do random.randseed(42);
+      let boundUp = 2;
+      let boundDown = 240;
+      let boundLeft = 2;
+      let boundRight = 508;
+      let cursorLine = 22;
+      let sqSize = 5;
+      let gmTime = 10;
+      //inicia o quadrado com tamanho 10x10
+      let square = Square.new((boundRight-boundLeft)/2, (boundDown-boundUp)/2, sqSize, boundLeft, boundRight, boundUp, boundDown); 
+      
+      //desenha as paredes
+      do Screen.drawLine(boundLeft,boundUp,boundRight,boundUp);   
+      do Screen.drawLine(boundLeft,boundDown,boundRight,boundDown);
+      do Screen.drawLine(boundLeft,boundUp,boundLeft,boundDown);
+      do Screen.drawLine(boundRight,boundUp,boundRight,boundDown);
+      
+      let food = Food.new(random.randin(boundLeft+sqSize, boundRight-sqSize), random.randin(boundUp+sqSize, boundDown-sqSize), boundLeft, boundRight, boundUp, boundDown);
+
+      do Output.moveCursor(cursorLine, 0);
+	  	do Output.printString("Score: ");
+
+      let score = 0;
+      return this;
+   }
+
+   /*desalocando os objetos */
+   method void dispose() {
+      do square.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   method void gameOver(){
+		do Output.moveCursor(12, 25);
+		do Output.printString("GAME OVER");
+		do Output.println();
+		
+		return;
+	}
+
+   method boolean moveSquare(int direction) {
+      var boolean ok;
+      let ok = true;
+      if (direction = 1) { let ok = square.moveUp();}
+      if (direction = 2) { let ok = square.moveDown();  }
+      if (direction = 3) { let ok = square.moveLeft(); }
+      if (direction = 4) { let ok = square.moveRight(); }
+      do Sys.wait(gmTime);
+      return ok;
+   }
+
+   method boolean isFoodEaten() {
+      var boolean break;
+      var int sqX, sqY, sqSZ, fdX, fdY, fdSZ, i, j;
+      let sqX = square.getX();
+      let sqY = square.getY();
+      let sqSZ = square.getSize();
+      let fdX = food.getX();
+      let fdY = food.getY();
+      let fdSZ = food.getSize();
+      let break = false;
+      let i = fdY - fdSZ;
+      while((i < (fdY + fdSZ + 1)) & (~break)) {
+        let j = fdX - fdSZ;
+        while((j < (fdX + fdSZ + 1)) & (~break)) {
+          if(((i > (sqY - sqSZ - 1)) & (i < (sqY + sqSZ + 1))) & ((j > (sqX - sqSZ - 1)) & (j < (sqX + sqSZ + 1)))) { 
+            let break = true; 
+          } 
+          let j = j + 1;
+        }
+        let i = i + 1;
+      }
+      return break;
+   }
+  
+   method void run() {
+      var char key; 
+      var boolean exit, ok;
+      var int direction;
+      let exit = false;
+      let ok = false;
+      let direction = 0;
+      
+      while (key = 0) {
+        let key = Keyboard.keyPressed();
+      }
+      
+      while (~exit) {
+
+          if (key = 81)  { let exit = true; }     
+          if (key = 131) { let direction = 1; }  
+          if (key = 133) { let direction = 2; }  
+          if (key = 130) { let direction = 3; }   
+          if (key = 132) { let direction = 4; }
+
+          let ok = moveSquare(direction);
+          if(~ok) { do gameOver(); let exit = true; }
+
+          if(isFoodEaten()) { let score = score + 1; do food.renew(); 
+            do Output.moveCursor(cursorLine, 8);
+	  	      do Output.printInt(score);
+            do square.setSize(square.getSize()+1);
+            if(gmTime > 1) {let gmTime = gmTime - 1;}    }
+
+          
+          let key = Keyboard.keyPressed();
+      }
+
+     return;
+   }
+}
+
+
+
