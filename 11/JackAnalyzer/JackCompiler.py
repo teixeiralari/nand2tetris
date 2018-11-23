@@ -10,7 +10,7 @@ OUTPUT_FILE_SUFFIX = ".xml"
 
 
 class JackAnalyzer:
-    """ translate a vm file/directory to an asm file """
+  
 
     def __init__(self, inputData):
 
