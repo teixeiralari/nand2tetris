@@ -1,0 +1,109 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+
+    static int freeList, freeListLength, freeListNext; 
+    static int HEAP_BASE;
+    static int HEAP_LENGTH; //pag. 141
+    static Array memory;
+    
+    /** Initializes the class. */
+    function void init() {
+        let memory = 0;
+        let HEAP_BASE = 2048;
+        let freeList = HEAP_BASE;
+        let HEAP_LENGTH = 14336; 
+        
+        let freeListLength = HEAP_LENGTH;
+        let freeListNext = null; 
+        let memory[freeList] = freeListLength;
+        let memory[freeList + 1] = freeListNext;
+
+        return;
+    }
+
+    function int firstFit(int address, int size)
+    {
+        if (memory[address] > size)
+        {
+            return address;
+        }
+        else
+        {
+            if(address + size > HEAP_BASE + HEAP_LENGTH)
+            {
+                return -1;
+            }
+            else
+            {
+                return Memory.firstFit(memory[address + 1], size);
+            }
+        }
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) 
+    {
+        return memory[address];
+    }
+ 
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) 
+    {
+        let memory[address] = value;
+        return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+     *  a reference to its base address. */
+    function int alloc(int size) 
+    { 
+        var int address, block;
+        let address = Memory.firstFit(freeList, size);
+
+        if (address > -1)
+        {
+            let memory[address + memory[address] - (size + 1)] = size + 1; // block[-1]
+            let block = address + memory[address] - size; // block[0]
+            let memory[address] = memory[address] - (size + 1); //update
+            return block;
+        }
+        else
+        {
+            //do Sys.error(5);
+            return -1;
+        }
+        
+    }
+
+    function int lastFree(int address)
+    {
+        if (memory[address + 1] = null)
+        {
+            return address + 1;
+        }
+        else
+        {
+            return Memory.lastFree(memory[address + 1]);
+        }
+    }
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array o) 
+    {
+        var int address;
+        let address = Memory.lastFree(freeList);
+        let memory[address] = o - 1;
+
+        return;
+    }    
+}
